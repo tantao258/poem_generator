@@ -8,7 +8,7 @@ tf.app.flags.DEFINE_string("filePath", "./corpus/poetry.txt", "filePath of corpu
 tf.app.flags.DEFINE_string("word2vector_path", "./word2vector/", "word2vector_path")
 tf.app.flags.DEFINE_string("pickle_path", "./pickle/", "fpickle_path of vocab table")
 tf.app.flags.DEFINE_string('modelSave_path', './model/', 'modelSave_path')
-tf.app.flags.DEFINE_integer("epoches", 20, "epoches")
+tf.app.flags.DEFINE_integer("epoches", 30, "epoches")
 tf.app.flags.DEFINE_integer("batch_size", 128, "batch_size")
 tf.app.flags.DEFINE_integer("n_steps", 30, "n_steps")
 tf.app.flags.DEFINE_integer("embedding_size", 256, "embedding_size")

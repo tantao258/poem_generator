@@ -67,8 +67,9 @@ class LSTM(object):
     def train_model(self, converter, epoches=20, modelSave_path='./model/', reload=False):
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
+
             #从上一次训练训练开始训练，加载上一次参数
-            if reload:
+            if reload and os.path.exists( os.path.join(modelSave_path, 'checkpoint')):
                 model_path = tf.train.latest_checkpoint(modelSave_path)
                 sess=self.saver.restore(model_path)
 
