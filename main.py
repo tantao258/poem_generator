@@ -54,7 +54,7 @@ def train():
                      modelSave_path=Flags.modelSave_path,
                      reload=True)
 
-def sample():
+def sample(Head_poem=False):
     #创建converter对象
     converter=TextConverter(filepath=Flags.filePath,
                             word2vector_path=Flags.word2vector_path,
@@ -71,9 +71,15 @@ def sample():
                 n_layers=Flags.n_layers,
                 batch_size=converter.batch_size)
 
-    lstm.sample(start_string="[",
-                converter=converter,
-                checkpoint_path=Flags.modelSave_path)
+    if Head_poem:
+        lstm.sample_head(head="风轻云淡",
+                         converter=converter,
+                         checkpoint_path=Flags.modelSave_path)
+
+    else:
+        lstm.sample(start_string="[",
+                    converter=converter,
+                    checkpoint_path=Flags.modelSave_path)
 
 if __name__ == '__main__':
     train()

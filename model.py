@@ -108,3 +108,26 @@ class LSTM(object):
                 predicton, new_state = sess.run([self.prediction, self.final_state], feed_dict={self.inputs: x, self.initial_state: new_state})
                 word = converter.softmaxVector_to_word(predicton)
             print(poem)
+
+    def sample_head(self, heads=None, converter=None, checkpoint_path="./model/"):
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            # 加载模型
+            model_path = tf.train.latest_checkpoint(checkpoint_path)
+            print('Restored from: {}'.format(model_path))
+            self.saver.restore(sess, model_path)
+            new_state = sess.run(self.initial_state)
+
+            poem = ''
+            add_comma = False
+            for word in heads:
+                add_comma = not add_comma
+                while word != "," and word != "。" and word != ']':
+                    poem += word
+                    x = converter.word_to_vector[word]
+                    x = np.reshape(x, (1, 1, self.embedding_size))
+                    predicton, new_state = sess.run([self.prediction, self.final_state], feed_dict={self.inputs: x, self.initial_state: new_state})
+                    word = converter.softmaxVector_to_word(predicton)
+                sign = "," if add_comma else "。"
+                poem = poem + sign
+            print(poem)
