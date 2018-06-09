@@ -11,8 +11,7 @@ class TextConverter(object):
                  pickle_path='./pickle/',
                  batch_size=192,
                  n_steps=30,
-                 embedding_size=256,
-                 ):
+                 embedding_size=256):
         self.filepath=filepath
         self.pickle_path=pickle_path
         self.batch_size=batch_size

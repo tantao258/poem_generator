@@ -64,9 +64,15 @@ class LSTM(object):
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), self.grad_clips)
         self.optimizer = tf.train.AdamOptimizer(self.learning_rate).apply_gradients(zip(grads, tvars))
 
-    def train_model(self, converter, epoches=20, modelSave_path='model/model.ckpt'):
+    def train_model(self, converter, epoches=20, modelSave_path='./model/', reload=False):
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
+            #从上一次训练训练开始训练，加载上一次参数
+            if reload:
+                model_path = tf.train.latest_checkpoint(modelSave_path)
+                sess=self.saver.restore(model_path)
+
+            #输入数据
             x, y =converter.batch_generator()
             n_batches = int(x.shape[0] / self.batch_size)
             for epoch in range(epoches):
@@ -80,17 +86,16 @@ class LSTM(object):
                     print('epoch: ' + str(epoch+1) + '    batch: ' + str(batch+1) + '/' + str(n_batches) + '  loss=', loss)
                 self.saver.save(sess, os.path.join(modelSave_path, 'model.ckpt'), global_step=epoch)
 
-    def sample(self, start_string=None, converter=None):
-        # samples = [i for i in start_string]
-
+    def sample(self, start_string=None, converter=None, checkpoint_path="./model/"):
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
-            model_path=tf.train.latest_checkpoint("./model/")
+            #加载模型
+            model_path=tf.train.latest_checkpoint(checkpoint_path)
             print('Restored from: {}'.format(model_path))
             self.saver.restore(sess, model_path)
             new_state = sess.run(self.initial_state)
-
-            x=converter.word_to_vector["["]
+            #输入
+            x=converter.word_to_vector[start_string]
             x=np.reshape(x, (1, 1, self.embedding_size))
             predicton, new_state = sess.run([self.prediction, self.final_state], feed_dict={self.inputs: x, self.initial_state: new_state})
             word=converter.softmaxVector_to_word(predicton)

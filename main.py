@@ -51,7 +51,8 @@ def train():
     #训练模型并保存模型
     lstm.train_model(epoches=Flags.epoches,
                      converter=converter,
-                     modelSave_path=Flags.modelSave_path)
+                     modelSave_path=Flags.modelSave_path,
+                     reload=True)
 
 def sample():
     #创建converter对象
@@ -71,7 +72,8 @@ def sample():
                 batch_size=converter.batch_size)
 
     lstm.sample(start_string="[",
-                converter=converter)
+                converter=converter,
+                checkpoint_path=Flags.modelSave_path)
 
 if __name__ == '__main__':
     train()
